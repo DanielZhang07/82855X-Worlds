@@ -5,12 +5,11 @@
 #include "constants.h"
 //DON'T COMMUNICATE WITH MAIN THREAD. Reading is fine, never write
 const float REST = 0;
-const float CAPTURE = 37;
-const float WALLSTAKE_PREP = 100;
-const float WALLSTAKE = 141;
+const float CAPTURE = 50;
 const float MANUAL = 350;
-inline float positions[4] = { REST, CAPTURE, WALLSTAKE,MANUAL };
+inline float positions[3] = { REST, CAPTURE,MANUAL };
 inline int lbTarget = 0; //NUMBER FROM 0-SIZE OF POSITIONS ARRAY, DO NOT PUT THE ACTUAL ANGLE
+inline bool conveyor_locked = false;
 
 inline float conveyor_speed = 127;
 
@@ -33,14 +32,56 @@ inline void driver_inputs() {
         }
     }
 }
+inline void ladybrownTask() {
 
-
-inline void ladybrown_and_color_task() {
-
+    bool lbAboveCapture = false;
+    bool newLBPress = false;
     bool manualLBMode = false;
-    ladybrownMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+    ladybrownMotor.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
     int lbTarget = 0;
 
+    while (true) {
+
+        float currTheta = ladybrownMotor.get_position() / 3;
+
+        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) {
+            if (lbTarget < (sizeof(positions) / sizeof(positions[0])) - 1) {
+                lbTarget++;
+            }
+        }
+        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT) && positions[lbTarget] != MANUAL) {
+            lbTarget = 0;
+        }
+
+
+
+        if (positions[lbTarget] == CAPTURE) {
+            float powerGiven = ladybrownController.update(currTheta, (positions[lbTarget] - currTheta));
+            ladybrownMotor.move(powerGiven); //update PID and motor voltage
+        } else { //manual mode is active
+            if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y) && master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+                ladybrownMotor.move(0);
+            } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
+                ladybrownMotor.move(127);
+            } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+                ladybrownMotor.move(-127);
+            } else ladybrownMotor.move(0);
+            if (currTheta < CAPTURE) lbTarget = 0;
+        }
+
+
+        if(!conveyor_locked){
+            driver_inputs();
+        }
+
+
+        pros::delay(15);
+    }
+}
+
+inline void color_task() {
+
+    
 
     char colour_detected = 'n'; // 'n' means empty
     bool wrong_color_detected = false;
@@ -52,9 +93,9 @@ inline void ladybrown_and_color_task() {
         
         double hue = colour_sensor.get_hue();
 
-        if (in_range(hue, 190, 215)) {
+        if (in_range(hue, 180, 230)) {
             colour_detected = 'b';
-        } else if (in_range(hue, 5, 15)) {
+        } else if (in_range(hue, 1, 30)) {
             colour_detected = 'r';
         } else {
             colour_detected = 'n';
@@ -74,42 +115,18 @@ inline void ladybrown_and_color_task() {
             }
         }
 
-        float currTheta = ladybrownMotor.get_position() / 3;
-
-        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) {
-            if (lbTarget < 3) {
-                lbTarget++;
-            }
-        }
-        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT) && positions[lbTarget] != MANUAL) {
-            lbTarget = 0;
-        }
-
-
-        if (positions[lbTarget] != MANUAL) {
-            float powerGiven = ladybrownController.update(currTheta, (positions[lbTarget] - currTheta));
-            ladybrownMotor.move(powerGiven); //update PID and motor voltage
-        } else { //manual mode is active
-            if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y) && master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
-                ladybrownMotor.move(0);
-            } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
-                ladybrownMotor.move(127);
-            } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
-                ladybrownMotor.move(-127);
-            } else ladybrownMotor.move(0);
-            if (currTheta < CAPTURE) lbTarget = 0;
-        }
+        
 
 
         if (sorter_active && team_color != 'n' && team_color != colour_detected && colour_detected != 'n' && distance_sensor.get() < CONVEYOR_DISTANCE_OFFSET) {
-            wrong_color_detected = false;
-            int voltageBeforeStop = conveyor.get_voltage();
-            pros::delay(25);
+            conveyor_locked = true;
+            pros::delay(50);
             conveyor.move(-127);
             pros::delay(250);
-            conveyor.move_voltage(voltageBeforeStop); //reset the voltage to what it was before reversing the conveyor
-            colour_detected = 'n';
-        } else {
+            conveyor.move(127); //reset the voltage to what it was before reversing the conveyor
+            conveyor_locked = false;
+            
+        } else if (!conveyor_locked){
             driver_inputs();
         }
 
@@ -119,11 +136,9 @@ inline void ladybrown_and_color_task() {
         } else if (controller_print == 5) {
             master.print(1, 0, "Team Color: %s", team_color == 'r' ? "Red" : "Blue");
         }
-
         if (controller_print > 0) {
             controller_print--;
         }
-
         pros::delay(15);
     }
 }
