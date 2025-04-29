@@ -55,20 +55,22 @@ inline void ladybrownTask() {
 
 
 
-        if (positions[lbTarget] == CAPTURE) {
-            float powerGiven = ladybrownController.update(currTheta, (positions[lbTarget] - currTheta));
-            ladybrownMotor.move(powerGiven); //update PID and motor voltage
-        } else { //manual mode is active
-            if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y) && master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
-                ladybrownMotor.move(0);
-            } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
-                ladybrownMotor.move(127);
-            } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
-                ladybrownMotor.move(-127);
-            } else ladybrownMotor.move(0);
-            if (currTheta < CAPTURE) lbTarget = 0;
+        if(!auton_active){
+            if (positions[lbTarget] == CAPTURE) {
+                float powerGiven = ladybrownController.update(currTheta, (positions[lbTarget] - currTheta));
+                ladybrownMotor.move(powerGiven); //update PID and motor voltage
+            } else { //manual mode is active
+                if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y) && master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+                    ladybrownMotor.move(0);
+                } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
+                    ladybrownMotor.move(127);
+                } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+                    ladybrownMotor.move(-127);
+                } else ladybrownMotor.move(0);
+                if (currTheta < CAPTURE) lbTarget = 0;
+            }
+    
         }
-
 
         if(!conveyor_locked){
             driver_inputs();

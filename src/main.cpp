@@ -30,11 +30,6 @@ void initialize() {
   master.clear();
   pros::Task ladybrown(ladybrownTask);
   pros::Task color(color_task);
-  while(true){
-    pros::lcd::print(0, "x: %f", chassis.getPose().x);
-    pros::lcd::print(1, "y: %f", chassis.getPose().y);
-    pros::delay(20);
-  }
 }
 
 /**
@@ -67,12 +62,10 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-
-  sorter_active = true;
   auton_active = true;
-  team_color = 'r'; // KEEP THiS COLOR IN BOT
-  chassis.setPose(0, 0, 0);
-  chassis.moveToPoint(0,48,10000);
+  sorter_active = true;
+  team_color = 'r';
+  redSoloAWP();
 
 }
 
