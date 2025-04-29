@@ -23,7 +23,7 @@ inline void redSoloAWP(){
 	chassis.tank(0,0);
 	pros::delay(150);
 	//move to rings top
-	chassis.turnToHeading(10, 1000);
+	chassis.turnToPoint(-23,48,1000);
 	chassis.waitUntilDone();
 	chassis.moveToPoint(-23,48,1000, {.minSpeed = 100, .earlyExitRange = 5});
 	intake.move(127);
@@ -33,7 +33,7 @@ inline void redSoloAWP(){
 	pros::delay(400);
 	chassis.tank(0,0);
 	//corner
-	chassis.turnToHeading(290,1000);
+	chassis.turnToPoint(-68, 66, 1000);
 	chassis.waitUntilDone();
 	chassis.moveToPoint(-68, 66, 1000, {.minSpeed = 100, .earlyExitRange = 8});
 	chassis.waitUntilDone();
@@ -47,19 +47,19 @@ inline void redSoloAWP(){
 	chassis.waitUntilDone();
 	chassis.moveToPoint(-58.5,40,1000, {.minSpeed = 100, .earlyExitRange = 8});
 	chassis.waitUntilDone();
-	chassis.turnToHeading(160, 1000, {.maxSpeed = 110, .minSpeed = 30, .earlyExitRange = 10});
+	chassis.turnToPoint(-35,-46, 1000, {.maxSpeed = 110, .minSpeed = 30, .earlyExitRange = 10});
 	chassis.waitUntilDone();
 	chassis.moveToPoint(-35,-46,1000, {.maxSpeed = 110, .minSpeed = 80, .earlyExitRange = 5});
 	chassis.waitUntilDone();
 	mogoclamp.toggle();
 	//move to bottom rings
-	chassis.turnToHeading(90, 1000);
+	chassis.turnToPoint(-21,46, 1000);
 	chassis.waitUntilDone();
 	intake.move(127);
 	chassis.moveToPoint(-21,46,1000);
 	chassis.waitUntilDone();
 	//move to mogo2
-	chassis.turnToHeading(175, 1000);
+	chassis.turnToPoint(-22,-31, 1000);
 	chassis.waitUntilDone();
 	intake.move(0);
 	chassis.moveToPoint(-22,-31,1000, {.forwards = false, .minSpeed = 80, .earlyExitRange = 5});
@@ -69,7 +69,7 @@ inline void redSoloAWP(){
 	chassis.tank(0,0);
 	mogoclamp.toggle();
 	//ladder
-	
+
 	chassis.turnToPoint(-8.5,-21,1000);
 	chassis.waitUntilDone();
 	chassis.moveToPoint(-8.5,-21,1000, {.forwards = false, .minSpeed = 80, .earlyExitRange = 5});
