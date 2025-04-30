@@ -10,3 +10,5 @@ inline bool auton_active = false;
 inline int auto_selected = -1;
 
 inline char team_color = 'n';
+
+inline int intake_state = 0;

@@ -1,8 +1,5 @@
 #pragma once
-#include "devices.h"
-#include "globalStates.h"
-#include "util.h"
-#include "constants.h"
+
 //DON'T COMMUNICATE WITH MAIN THREAD. Reading is fine, never write
 const float REST = 0;
 const float CAPTURE = 50;
@@ -55,18 +52,21 @@ inline void ladybrownTask() {
 
 
 
-        if (positions[lbTarget] == CAPTURE) {
-            float powerGiven = ladybrownController.update(currTheta, (positions[lbTarget] - currTheta));
-            ladybrownMotor.move(powerGiven); //update PID and motor voltage
-        } else { //manual mode is active
-            if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y) && master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
-                ladybrownMotor.move(0);
-            } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
-                ladybrownMotor.move(127);
-            } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
-                ladybrownMotor.move(-127);
-            } else ladybrownMotor.move(0);
-            if (currTheta < CAPTURE) lbTarget = 0;
+
+        if (!auton_active) {
+            if (positions[lbTarget] == CAPTURE) {
+                float powerGiven = ladybrownController.update(currTheta, (positions[lbTarget] - currTheta));
+                ladybrownMotor.move(powerGiven); //update PID and motor voltage
+            } else { //manual mode is active
+                if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y) && master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+                    ladybrownMotor.move(0);
+                } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
+                    ladybrownMotor.move(127);
+                } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+                    ladybrownMotor.move(-127);
+                } else ladybrownMotor.move(0);
+                if (currTheta < CAPTURE) lbTarget = 0;
+            }
         }
 
 
@@ -78,7 +78,12 @@ inline void ladybrownTask() {
         pros::delay(15);
     }
 }
-
+inline void intakeAuton(){
+    if(intake_state == 1){
+        conveyor.move(127);
+    }
+    else conveyor.move(0);
+}
 inline void color_task() {
 
     
@@ -92,7 +97,8 @@ inline void color_task() {
     while (true) {
         
         double hue = colour_sensor.get_hue();
-
+        double intakeVoltage = intake.get_voltage();
+        double conveyorVoltage = conveyor.get_voltage();
         if (in_range(hue, 180, 230)) {
             colour_detected = 'b';
         } else if (in_range(hue, 1, 30)) {
@@ -122,12 +128,15 @@ inline void color_task() {
             conveyor_locked = true;
             pros::delay(50);
             conveyor.move(-127);
-            pros::delay(250);
+            pros::delay(300);
             conveyor.move(127); //reset the voltage to what it was before reversing the conveyor
             conveyor_locked = false;
             
         } else if (!conveyor_locked){
-            driver_inputs();
+            if(!auton_active){
+                driver_inputs();
+            }
+            else intakeAuton();
         }
 
         if (controller_print == 0) {
@@ -142,6 +151,7 @@ inline void color_task() {
         pros::delay(15);
     }
 }
+
 // inline void reactiveClawClamp() {
 //     while (true) {
 //         if (reactiveClawClampOn) {
@@ -157,19 +167,19 @@ inline void color_task() {
 // }
 
 // /// @brief Stops the conveyor when a ring is detected by the distance sensor
-// inline void monitor_and_stop_conveyor() {
-//     while (true) {
-//         if (auton_active) {
-//             if (stopNextRing) {
-//                 if (distance_sensor.get() < CONVEYOR_DISTANCE_OFFSET) {
-//                     conveyor.move(0);
-//                     stopNextRing = false;
-//                 }
-//             }
-//         }
-//         pros::delay(30);
-//     }
-// }
+inline void monitor_and_stop_conveyor() {
+     while (true) {
+        if (auton_active) {
+            if (stopNextRing) {
+                if (distance_sensor.get() < CONVEYOR_DISTANCE_OFFSET) {
+                    conveyor.move(0);
+                    stopNextRing = false;
+                }
+            }
+        }
+        pros::delay(30);
+    }
+}
 // inline void unjamLBTask() {
 
 //     int jamCount = 0;

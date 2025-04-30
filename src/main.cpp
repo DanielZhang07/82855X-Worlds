@@ -1,10 +1,14 @@
 #include "main.h"
+#include "lemlib/api.hpp"
+#include "constants.h"
+#include "globalStates.h"
+#include "armController.h"
+#include "./devices.h"
+#include "macros.h"
+#include <cmath>
+#include "util.h"
 #include "./tasks.h"
 #include "autons.h"
-#include "devices.h"
-#include "lemlib/api.hpp"
-#include "pros/rtos.hpp"
-#include <cmath>
 // using json = nlohmann::json;
 
 /**
@@ -30,12 +34,8 @@ void initialize() {
   master.clear();
   pros::Task ladybrown(ladybrownTask);
   pros::Task color(color_task);
-  while(true){
-    pros::lcd::print(0, "x: %f", chassis.getPose().x);
-    pros::lcd::print(1, "y: %f", chassis.getPose().y);
-    pros::delay(20);
-  }
-}
+};
+
 
 /**
  * Runs while the robot is in the disabled state of Field Management System or
@@ -67,12 +67,11 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-
   sorter_active = true;
   auton_active = true;
   team_color = 'r'; // KEEP THiS COLOR IN BOT
-  chassis.setPose(0, 0, 0);
-  chassis.moveToPoint(0,48,10000);
+  redRingside();
+
 
 }
 
