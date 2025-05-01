@@ -325,7 +325,6 @@ inline void redMogoRushClampedMogo(){
 	chassis.moveToPoint(-38.282, -44.637, 1000, {.minSpeed = 30, .earlyExitRange = 4}); //intermediate point
 	chassis.moveToPose(-58.947, -58.844, 223.6, 1500); //move to corner
 	chassis.waitUntilDone();
-	chassis.tank(80, 80);
 	intake.move(127);
 	delay(1000);
 	chassis.moveToPoint(-55.072, -54.775, 1000, {.forwards = false});
