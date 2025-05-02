@@ -4,6 +4,7 @@
 const float REST = 0;
 const float CAPTURE = 50;
 const float MANUAL = 350;
+const float LADDER = 250;
 inline float positions[3] = { REST, CAPTURE,MANUAL };
 inline int lbTarget = 0; //NUMBER FROM 0-SIZE OF POSITIONS ARRAY, DO NOT PUT THE ACTUAL ANGLE
 inline bool conveyor_locked = false;
@@ -152,19 +153,19 @@ inline void color_task() {
     }
 }
 
-// inline void reactiveClawClamp() {
-//     while (true) {
-//         if (reactiveClawClampOn) {
-//             if (clawLimitSwitch.get_new_press() == 1) {
-//                 claw.extend();
-//                 if (auton_active) {
-//                     chassis.cancelMotion();
-//                 }
-//             }
-//         }
-//         pros::delay(30);
-//     }
-// }
+inline void reactiveClawClamp() {
+    while (true) {
+        if (reactiveClawClampOn) {
+            if (clawLimitSwitch.get_new_press() == 1) {
+                claw.extend();
+                if (auton_active) {
+                    chassis.cancelMotion();
+                }
+            }
+        }
+        pros::delay(30);
+    }
+}
 
 // /// @brief Stops the conveyor when a ring is detected by the distance sensor
 inline void monitor_and_stop_conveyor() {

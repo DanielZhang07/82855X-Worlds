@@ -34,6 +34,7 @@ void initialize() {
   master.clear();
   pros::Task ladybrown(ladybrownTask);
   pros::Task color(color_task);
+  pros::Task claw(reactiveClawClamp);
 };
 
 
@@ -70,7 +71,7 @@ void autonomous() {
   sorter_active = true;
   auton_active = true;
   team_color = 'r'; // KEEP THiS COLOR IN BOT
-  redRingside();
+  redGoalRush();
 
 
 }
