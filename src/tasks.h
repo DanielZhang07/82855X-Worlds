@@ -70,10 +70,7 @@ inline void ladybrownTask() {
             }
         }
 
-
-        if(!conveyor_locked){
-            driver_inputs();
-        }
+    
 
 
         pros::delay(15);
@@ -161,6 +158,7 @@ inline void reactiveClawClamp() {
                 if (auton_active) {
                     chassis.cancelMotion();
                 }
+                
             }
         }
         pros::delay(30);

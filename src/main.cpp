@@ -35,6 +35,9 @@ void initialize() {
   pros::Task ladybrown(ladybrownTask);
   pros::Task color(color_task);
   pros::Task claw(reactiveClawClamp);
+  delay(1000);
+  reactiveClawClampOn = true;
+
 };
 
 
@@ -70,8 +73,8 @@ void competition_initialize() {}
 void autonomous() {
   sorter_active = true;
   auton_active = true;
-  team_color = 'r'; // KEEP THiS COLOR IN BOT
-  redGoalRush();
+  team_color = 'b'; // KEEP THiS COLOR IN BOT
+  blueGoalRush();
 
 
 }
