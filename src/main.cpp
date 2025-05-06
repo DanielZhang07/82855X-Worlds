@@ -73,8 +73,8 @@ void competition_initialize() {}
 void autonomous() {
   sorter_active = true;
   auton_active = true;
-  team_color = 'b'; // KEEP THiS COLOR IN BOT
-  blueGoalRush();
+  team_color = 'r'; // KEEP THiS COLOR IN BOT
+  soloWinPointRed();
 
 
 }

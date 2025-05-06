@@ -384,7 +384,7 @@ inline void soloWinPointRed() {
 	chassis.setPose(-60,12,215);
 	//alliance
 	ladybrownMotor.move(127);
-	pros::delay(1000);
+	pros::delay(800);
 	ladybrownMotor.move(-127);
 	//move to clamp
   chassis.swingToHeading(265, lemlib::DriveSide::LEFT, 400);
@@ -404,9 +404,10 @@ inline void soloWinPointRed() {
 	intake_state = 1;
 	chassis.waitUntilDone();
 	//corner
+	delay(200);
   chassis.turnToPoint(-53,32, 1000);
   chassis.waitUntilDone();
-  chassis.moveToPoint(-53,32,1000, {.minSpeed = 80, .earlyExitRange = 5});
+  chassis.moveToPoint(-53.5,32.5,1000, {.minSpeed = 80, .earlyExitRange = 5});
   chassis.waitUntilDone();
 	chassis.turnToPoint(-64, 52, 1000, {.minSpeed = 30, .earlyExitRange = 5});
 	chassis.waitUntilDone();
@@ -428,13 +429,14 @@ inline void soloWinPointRed() {
 	
 	chassis.moveToPoint(-52,-50,1000, {.maxSpeed = 70, .minSpeed = 50, .earlyExitRange = 5});
 	chassis.waitUntil(18);
-	intake_state = 0;
+	intake_state = 3;
 	intakeRiser.toggle();
 	chassis.waitUntilDone();
   mogoclamp.toggle();
   delay(1000);
   
   chassis.turnToHeading(305,1000,  {.minSpeed = 30, .earlyExitRange = 10});
+  intake_state = 0;
   intakeRiser.toggle();
   temp = chassis.getPose();
   chassis.setPose(-45,-6,temp.theta);
@@ -446,7 +448,7 @@ inline void soloWinPointRed() {
 	//chassis.turnToPoint(-22,-31, 1000);
 	//chassis.waitUntilDone();
 	// intake.move(0);
-	chassis.moveToPoint(-29.5,-22.5,1200, {.forwards = false, .minSpeed = 80, .earlyExitRange = 5});
+	chassis.moveToPoint(-27.5,-23.5,1200, {.forwards = false, .minSpeed = 80, .earlyExitRange = 5});
 	chassis.waitUntilDone();
 	approachAndClampMogo();
 	chassis.turnToPoint(-28,-44,1000);
