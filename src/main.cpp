@@ -120,7 +120,7 @@ void opcontrol() {
     //   intake.move(0);
     // }
 
-    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
+    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
       if (mogoclamp.is_extended()) {
         mogoclamp.retract();
       } else {
@@ -137,13 +137,7 @@ void opcontrol() {
       }
     }
 
-    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
-      if (intakeRiser.is_extended()) {
-        intakeRiser.retract();
-      } else {
-        intakeRiser.extend();
-      }
-    }
+    
     // if (master.get_digital(pros::E_CONTROLLER_DIGITAL_UP)) {
     //   ladybrownMotor.move(127);
     // } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)) {

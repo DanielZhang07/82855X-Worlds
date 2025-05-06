@@ -2,7 +2,7 @@
 
 //DON'T COMMUNICATE WITH MAIN THREAD. Reading is fine, never write
 const float REST = 0;
-const float CAPTURE = 50;
+const float CAPTURE = 48.7;
 const float MANUAL = 350;
 const float LADDER = 250;
 inline float positions[3] = { REST, CAPTURE,MANUAL };
